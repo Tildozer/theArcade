@@ -1,0 +1,43 @@
+body, .title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 75rem;
+}
+ .title, .start, main {
+  padding: 2rem;
+ }
+.title{
+    background: linear-gradient( 1turn, rgba(0, 191, 255, 0.662), white);
+    margin: 0;
+}
+.start {
+   display: flex;
+   justify-content: space-between;
+   background: linear-gradient( 0.5turn, rgba(0, 191, 255, 0.662), rgb(71, 71, 71));
+   min-width: 75rem;
+}
+input {
+    width: 5rem;
+}
+.names {
+    display: flex;
+    justify-content: space-around;
+    background-color: rgb(71, 71, 71);
+    min-width: 80rem;
+    
+}
+.hide{
+    display: none;
+}
+main{
+    background-color: rgb(0, 0, 151);
+    border-left: 3rem solid rgb(81, 81, 216);
+    border-right: 3rem solid rgb(81, 81, 216);
+}
+td {
+    height: 9rem;
+    width: 9rem;
+    border-radius: 50%;
+    border: .5rem solid  rgb(81, 81, 216);
+}
