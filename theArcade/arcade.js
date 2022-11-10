@@ -13,9 +13,10 @@ let buttonPlay2 = document.querySelector('#enter2');
 let form2 = document.querySelector('#formPlay2');
 let compButton = document.querySelector('#compPlay');
 // ect univVars
-const board = [];
+let board = [];
 let turnsTillFull;
 let winner = false;
+let body = document.querySelector('body');
 let boardSize = document.querySelector('#connectSize');
 let main = document.querySelector('main');
 let resetButton = document.querySelector('#reset');
@@ -45,6 +46,26 @@ const createBoard = () => {
   // console.log(board);
   return board;
 };
+resetButton.addEventListener('click', (ev) => {
+  ev.preventDefault();
+  resetButton.classList.toggle('here');
+  resetButton.classList.toggle('hide');
+  let connectNum = ~~boardSize.value;
+  let boardLength = connectNum + 3;
+  board = [];
+  for(let i = 0; i < boardLength -1; i++){
+    board.push([]);
+    let resetBoard = main.children[i];
+    console.log(resetBoard.children)
+    for(let j = 0; j < boardLength; j++){
+      resetBoard.children[j].style.backgroundColor = 'rgb(71, 71, 71)';
+      board[i].push(alph[i] + [j]);
+      winner = false;
+    }
+  }
+  turnsTillFull = board.length * board[0].length;
+  return board
+} )
 // input for players name and color selection.
 buttonPlay1.addEventListener('click', (ev) => {
   ev.preventDefault();
@@ -80,10 +101,30 @@ function startGame(){
     let title = document.querySelector('.title');
     title.innerHTML = `<h1>Connect ${boardSize.value}</h1>`;
     createBoard();
+    prettyUpBoard();
     namePlay1.style.textDecoration = 'underline';
     boardSize.className = 'hide';
     turnsTillFull = board.length * board[0].length;
     return turnsTillFull;
+  }
+}
+
+function prettyUpBoard(){
+  let title = document.querySelector('.title');
+  if(~~boardSize.value === 4){
+    title.style.minWidth = '60rem';
+    main.style.minWidth = '69rem';
+  } else if(~~boardSize.value === 5){
+    console.log('correct');
+    title.style.minWidth = '86rem';
+    body.style.minWidth = '86rem';
+    main.style.minWidth = '80rem';
+  } else if(~~boardSize.value === 6){
+    title.style.minWidth = '91.5rem';
+    main.style.minWidth = '85rem';
+  } else if(~~boardSize.value === 7){
+    title.style.minWidth = '101rem';
+    main.style.minWidth = '95rem';
   }
 }
 
@@ -139,8 +180,11 @@ main.addEventListener('click', (ev) => {
           checkDiagRight(convert);
           checkDiagLeft(convert);
           turnsTillFull--;
+          console.log(turnsTillFull)
           ifFull();
-          whosTurn();
+          if(!winner){
+            whosTurn();
+          }
         }
       }
     } 
@@ -158,6 +202,7 @@ function didWin() {
     main.style.borderLeft = `3rem solid ${colorPlay1.value}`;
     main.style.borderRight = `3rem solid ${colorPlay1.value}`;
     resetButton.classList.toggle('hide');
+    resetButton.classList.add('here');
   } else {
     let name = namePlay2.innerText;
     namePlay2.innerText = `${name} is the winner!`;
@@ -166,8 +211,10 @@ function didWin() {
     main.style.borderLeft = `3rem solid ${colorPlay2.value}`;
     main.style.borderRight = `3rem solid ${colorPlay2.value}`;
     resetButton.classList.toggle('hide');
+    resetButton.classList.add('here');
   }
 }
+// Below are the necessary functions to verify if you have a win, or if the game continues
 //this is used to count up the amount in a row for each direction
 function countPlayTiles (currentToken, nextToken) {
   if( currentToken !== nextToken){
@@ -179,9 +226,7 @@ function countPlayTiles (currentToken, nextToken) {
     didWin();
     winner = true;
   } 
-}
-  
-  // Below are the necessary functions to verify if you have a win, or if the game continues
+}  
   function checkHori(click) {
     for(let i = board.length - 1; i > 0; i--){
       let tokenColumn = board[i][click.className[1]];
@@ -273,6 +318,6 @@ function ifFull(){
     namePlay1.innerText = 'Draw! try again.';
     namePlay2.innerText = '';
     resetButton.classList.toggle('hide');
-    console.log(resetButton);
+    resetButton.classList.toggle('here');
   } 
 }

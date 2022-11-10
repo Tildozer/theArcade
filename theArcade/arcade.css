@@ -7,18 +7,6 @@ body, .title {
     align-items: center;
     min-width: 80rem;
 }
-/*  @media (max-width: 1000px){
-    body, .title{
-        min-width: 70rem;
-    }
-    main{
-        min-width: 65rem;
-    }
-    td {
-        height: 1rem;
-        width: 1rem;
-    } 
-} */
  .title, .start, main {
   padding: 2rem;
  }
@@ -42,8 +30,11 @@ input {
 
     
 }
-.hide{
+.hide {
     display: none;
+}
+.here {
+    height: 1.5rem;
 }
 main{
     background-color: rgb(0, 0, 151);
@@ -51,8 +42,9 @@ main{
     border-right: 3rem solid rgb(81, 81, 216);
 }
 td {
-    height: 6.5rem;
-    width: 6.5rem;
+    height: 8.5rem;
+    width: 8.5rem;
     border-radius: 50%;
     border: .5rem solid  rgb(81, 81, 216);
+  
 }
