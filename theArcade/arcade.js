@@ -20,7 +20,6 @@ let body = document.querySelector('body');
 let boardSize = document.querySelector('#connectSize');
 let main = document.querySelector('main');
 let resetButton = document.querySelector('#reset');
-console.log(resetButton);
 // used to help create classes and board so the game can keep track of moves.
 const alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
 const alphaKey = {a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i : 8, j: 9};
@@ -46,26 +45,6 @@ const createBoard = () => {
   // console.log(board);
   return board;
 };
-resetButton.addEventListener('click', (ev) => {
-  ev.preventDefault();
-  resetButton.classList.toggle('here');
-  resetButton.classList.toggle('hide');
-  let connectNum = ~~boardSize.value;
-  let boardLength = connectNum + 3;
-  board = [];
-  for(let i = 0; i < boardLength -1; i++){
-    board.push([]);
-    let resetBoard = main.children[i];
-    console.log(resetBoard.children)
-    for(let j = 0; j < boardLength; j++){
-      resetBoard.children[j].style.backgroundColor = 'rgb(71, 71, 71)';
-      board[i].push(alph[i] + [j]);
-      winner = false;
-    }
-  }
-  turnsTillFull = board.length * board[0].length;
-  return board
-} )
 // input for players name and color selection.
 buttonPlay1.addEventListener('click', (ev) => {
   ev.preventDefault();
@@ -93,9 +72,9 @@ buttonPlay2.addEventListener('click', (ev) => {
 function startGame(){
   if(form.className === 'hide' && form2.className === 'hide'){
     if(colorPlay1.value === colorPlay2.value){
-      colorPlay1.value = 'Crimson'
+      colorPlay1.value = 'Crimson';
       namePlay1.style.color = colorPlay1.value;
-      colorPlay2.value = '#6495ED'
+      colorPlay2.value = '#6495ED';
       namePlay2.style.color = colorPlay2.value;
     }
     let title = document.querySelector('.title');
@@ -321,3 +300,29 @@ function ifFull(){
     resetButton.classList.toggle('here');
   } 
 }
+// this is used to put the game in a replayable form.
+resetButton.addEventListener('click', (ev) => {
+  ev.preventDefault();
+  resetButton.classList.toggle('here');
+  resetButton.classList.toggle('hide');
+  let connectNum = ~~boardSize.value;
+  let boardLength = connectNum + 3;
+  board = [];
+  for(let i = 0; i < boardLength -1; i++){
+    board.push([]);
+    let resetBoard = main.children[i];
+    console.log(resetBoard.children)
+    for(let j = 0; j < boardLength; j++){
+      resetBoard.children[j].style.backgroundColor = 'rgb(71, 71, 71)';
+      board[i].push(alph[i] + [j]);
+      winner = false;
+    }
+  }
+  namePlay1.innerText = `${play1Input.value}`;
+  namePlay2.innerText = `${play2Input.value}`;
+  player1 = true;
+  namePlay1.style.textDecoration = 'underline';
+  namePlay2.style.textDecoration = 'none';
+  turnsTillFull = board.length * board[0].length;
+  return board;
+} )
