@@ -5,7 +5,6 @@ let namePlay1 = document.querySelector('#player1');
 let colorPlay1 = document.querySelector('#colors1');
 let buttonPlay1 = document.querySelector('#enter1');
 let form = document.querySelector('#formPlay1');
-
 // player 2 variables
 let play2Input = document.querySelector('#inputPlay2');
 let namePlay2 = document.querySelector('#player2');
@@ -13,7 +12,6 @@ let colorPlay2 = document.querySelector('#colors2');
 let buttonPlay2 = document.querySelector('#enter2');
 let form2 = document.querySelector('#formPlay2');
 let compButton = document.querySelector('#compPlay');
-
 // ect univVars
 const board = [];
 let turnsTillFull;
@@ -21,15 +19,14 @@ let winner = false;
 let boardSize = document.querySelector('#connectSize');
 let main = document.querySelector('main');
 let resetButton = document.querySelector('#reset');
-console.log(resetButton)
+console.log(resetButton);
 // used to help create classes and board so the game can keep track of moves.
 const alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
 const alphaKey = {a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i : 8, j: 9};
 // will create the board when players have selecthed there names.
 const createBoard = () => {
-  connectNum = ~~boardSize.value;
-  boardLength = connectNum + 3;
-  console.log(boardLength)
+  let connectNum = ~~boardSize.value;
+  let boardLength = connectNum + 3;
   for(let i = 0; i < boardLength -1; i++){
     let newRow = document.createElement('tr');
     newRow;
@@ -38,14 +35,14 @@ const createBoard = () => {
     for(let j = 0; j < boardLength; j++){
       let square = document.createElement('td');
       square;
-      square.style.backgroundColor = 'rgb(71, 71, 71)'
+      square.style.backgroundColor = 'rgb(71, 71, 71)';
       newRow.appendChild(square);
       square.className = `${alph[i]}${[j]}`;
       board[i].push(alph[i] + [j]);
     }
   }
   main.classList.toggle('hide');
-  console.log(board)
+  // console.log(board);
   return board;
 };
 // input for players name and color selection.
@@ -60,7 +57,6 @@ buttonPlay1.addEventListener('click', (ev) => {
   form.className = 'hide';
   startGame();
 });
-
 buttonPlay2.addEventListener('click', (ev) => {
   ev.preventDefault();
   if(play2Input.value.length < 1){
@@ -72,7 +68,6 @@ buttonPlay2.addEventListener('click', (ev) => {
   form2.className = 'hide';
   startGame();
 });
-
 //this one is checked each time a name is input so we can start when everyones ready.    
 function startGame(){
   if(form.className === 'hide' && form2.className === 'hide'){
@@ -138,7 +133,7 @@ main.addEventListener('click', (ev) => {
           } else {
             convert.style.backgroundColor = `${colorPlay2.value}`;
           }
-          console.log('board', board);
+        //  console.log('board', board);
           checkVerti(convert);
           checkHori(convert);
           checkDiagRight(convert);
@@ -150,7 +145,6 @@ main.addEventListener('click', (ev) => {
       }
     } 
   });
-// Below are the necessary functions to verify if you have a win, or if the game continues
 function didWin() {
   let title = document.querySelector('.title');
   let start = document.querySelector('.start');
@@ -186,10 +180,11 @@ function countPlayTiles (currentToken, nextToken) {
     winner = true;
   } 
 }
-
-function checkHori(click) {
-   for(let i = board.length - 1; i > 0; i--){
-    let tokenColumn = board[i][click.className[1]];
+  
+  // Below are the necessary functions to verify if you have a win, or if the game continues
+  function checkHori(click) {
+    for(let i = board.length - 1; i > 0; i--){
+      let tokenColumn = board[i][click.className[1]];
     let previousToken = board[i - 1][click.className[1]]; 
     // console.log('win hori', winCount)
     countPlayTiles(tokenColumn, previousToken);
@@ -214,7 +209,6 @@ function checkVerti(click) {
     }
   }
 }
-
 
 function checkDiagRight(click) {
   let key = alphaKey[click.className[0]];
@@ -273,7 +267,6 @@ function checkDiagLeft(click) {
     }
   }
 }
-
 
 function ifFull(){
   if(turnsTillFull === 0){
