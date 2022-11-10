@@ -21,7 +21,8 @@ let winner = false;
 let boardSize = document.querySelector('#connectSize');
 let main = document.querySelector('main');
 let resetButton = document.querySelector('#reset');
-// used to help create classes and board  so the game can keep track of moves.
+console.log(resetButton)
+// used to help create classes and board so the game can keep track of moves.
 const alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
 const alphaKey = {a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i : 8, j: 9};
 // will create the board when players have selecthed there names.
@@ -71,14 +72,22 @@ buttonPlay2.addEventListener('click', (ev) => {
   form2.className = 'hide';
   startGame();
 });
+
 //this one is checked each time a name is input so we can start when everyones ready.    
 function startGame(){
   if(form.className === 'hide' && form2.className === 'hide'){
-    // compButton.className = 'hide';
+    if(colorPlay1.value === colorPlay2.value){
+      colorPlay1.value = 'Crimson'
+      namePlay1.style.color = colorPlay1.value;
+      colorPlay2.value = '#6495ED'
+      namePlay2.style.color = colorPlay2.value;
+    }
+    let title = document.querySelector('.title');
+    title.innerHTML = `<h1>Connect ${boardSize.value}</h1>`;
     createBoard();
-    boardSize.className = 'hide'
+    namePlay1.style.textDecoration = 'underline';
+    boardSize.className = 'hide';
     turnsTillFull = board.length * board[0].length;
-
     return turnsTillFull;
   }
 }
@@ -86,8 +95,12 @@ function startGame(){
 function whosTurn(){
   if(player1){
     player1 = !player1;
+    namePlay2.style.textDecoration = 'underline';
+    namePlay1.style.textDecoration = 'none';
   } else {   
     player1 = !player1;
+    namePlay1.style.textDecoration = 'underline';
+    namePlay2.style.textDecoration = 'none';
   }
 }
 // determines where the lowest point on the board is for the column you click on.   
@@ -125,25 +138,22 @@ main.addEventListener('click', (ev) => {
           } else {
             convert.style.backgroundColor = `${colorPlay2.value}`;
           }
-          // console.log('board', board);
+          console.log('board', board);
           checkVerti(convert);
           checkHori(convert);
           checkDiagRight(convert);
           checkDiagLeft(convert);
           turnsTillFull--;
           ifFull();
-          console.log(turnsTillFull);
           whosTurn();
         }
       }
     } 
   });
-
 // Below are the necessary functions to verify if you have a win, or if the game continues
 function didWin() {
   let title = document.querySelector('.title');
   let start = document.querySelector('.start');
-  console.log
   if(player1){
     let name = namePlay1.innerText;
     namePlay1.innerText = `${name} is the winner!`;
@@ -164,65 +174,72 @@ function didWin() {
     resetButton.classList.toggle('hide');
   }
 }
-
+//this is used to count up the amount in a row for each direction
 function countPlayTiles (currentToken, nextToken) {
   if( currentToken !== nextToken){
     winCount = 1;
   } else {
     winCount++;
   }
-  // need a change when we let people choose the size of the board
   if(winCount === ~~boardSize.value){
     didWin();
     winner = true;
-}
+  } 
 }
 
 function checkHori(click) {
-  let winCount = 1;
    for(let i = board.length - 1; i > 0; i--){
     let tokenColumn = board[i][click.className[1]];
     let previousToken = board[i - 1][click.className[1]]; 
+    // console.log('win hori', winCount)
     countPlayTiles(tokenColumn, previousToken);
+    //this is used to make sure winCout is reset to one at the end of each for loop.
+    if(i === 0){
+      countPlayTiles( 0, 1);
       }
     }
+  }
 
 function checkVerti(click) {
   let tokenRow = board[alphaKey[click.className[0]]];
   let num = ~~click.className[1];
-  let winCount = 1;
-  //hard coded
-  for(let i = num + 3; i >= 0; i--){
+  for(let i = num + ~~boardSize.value; i >= 0; i--){
     if(tokenRow[i] !== undefined){
-      countPlayTiles( tokenRow[i], tokenRow[i + 1]);
+      if(tokenRow[i + 1] !== undefined){
+        countPlayTiles( tokenRow[i], tokenRow[i + 1]);
+      }
+    }
+    if(i === 0){
+      countPlayTiles( 0, 1);
     }
   }
 }
 
+
 function checkDiagRight(click) {
   let key = alphaKey[click.className[0]];
   let column = click.className[1];
-  //hard coded
-  let addOrSub = 4;
-  let winCount = 1;
-  
-  for(let i = Math.ceil(board.length * 1.5); i > 0; i--){
+  let addOrSub = ~~boardSize.value;
+  for(let i = Math.ceil(board.length * 1.5); i >= 0; i--){
     let startRow = +key - addOrSub;
     let startColumn = +column + addOrSub;
     addOrSub--;
-    //hard coded
-    if(startRow >= 0 && startRow < 6){
+    if(startRow >= 0 && startRow < board[0].length - 1){
       if(startColumn < board[0].length){
         let start = board[startRow][startColumn];
         if(startRow + 1 >= 0 && startRow + 1 < board.length){
           if(startColumn - 1 < board[0].length){
             let next = board[startRow + 1][startColumn - 1];
             if( next !== undefined){
+             // console.log('win count diag right', 'start', start, 'next', next);
               countPlayTiles(start, next);
             } 
           }
         }
       }
+    }
+    if(i === 0){
+      countPlayTiles( 0, 1);
     }
   }
 }
@@ -230,9 +247,8 @@ function checkDiagRight(click) {
 function checkDiagLeft(click) {
   let key = alphaKey[click.className[0]];
   let column = click.className[1];
-  let addOrSub = 4;
-  let winCount = 1;  
-  for(let i = Math.ceil(board.length * 1.5); i > 0; i--){
+  let addOrSub = ~~boardSize.value; 
+  for(let i = Math.ceil(board.length * 1.5); i >= 0; i--){
     let startRow = +key - addOrSub;
     let startColumn = +column - addOrSub;
     addOrSub--;
@@ -242,7 +258,8 @@ function checkDiagLeft(click) {
         if(start !== undefined){
           if(startRow + 1 >= 0 && startRow + 1 < board.length){
             if(startColumn - 1 < board[0].length){
-              let next = board[startRow + 1][startColumn + 1]
+              let next = board[startRow + 1][startColumn + 1];
+              // console.log('win count diag left', 'start', start, 'next', next);
               if(next !== undefined){
                 countPlayTiles(start, next);
               }
@@ -250,6 +267,9 @@ function checkDiagLeft(click) {
           }
         }
       }
+    }
+    if(i === 0){
+      countPlayTiles( 0, 1);
     }
   }
 }
@@ -260,5 +280,6 @@ function ifFull(){
     namePlay1.innerText = 'Draw! try again.';
     namePlay2.innerText = '';
     resetButton.classList.toggle('hide');
+    console.log(resetButton);
   } 
 }
