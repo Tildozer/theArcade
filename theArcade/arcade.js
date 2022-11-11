@@ -24,6 +24,7 @@ let resetButton = document.querySelector('#reset');
 const alph = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
 const alphaKey = {a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i : 8, j: 9};
 // will create the board when players have selecthed there names.
+//I also have a 2D array being created along side it to keep track of the board.
 const createBoard = () => {
   let connectNum = ~~boardSize.value;
   let boardLength = connectNum + 3;
@@ -49,7 +50,7 @@ const createBoard = () => {
 buttonPlay1.addEventListener('click', (ev) => {
   ev.preventDefault();
   if(play1Input.value.length < 1){
-    namePlay1.innerText = `Player 1`;
+    play1Input.value = `Player 1`;
   }else {
     namePlay1.innerText = play1Input.value;
   } 
@@ -60,10 +61,9 @@ buttonPlay1.addEventListener('click', (ev) => {
 buttonPlay2.addEventListener('click', (ev) => {
   ev.preventDefault();
   if(play2Input.value.length < 1){
-    namePlay2.innerText = `Player 2`;
-  }else {
-    namePlay2.innerText = play2Input.value;
+    play2Input.value = `Player 2`;
   }
+  namePlay2.innerText = play2Input.value;
   namePlay2.style.color = colorPlay2.value;
   form2.className = 'hide';
   startGame();
@@ -87,23 +87,28 @@ function startGame(){
     return turnsTillFull;
   }
 }
-
+// when I made bigger boards nothing quite mached up so I had to make adjustments here.
+//first went with making everthing bigger, then realized if someone used a smaller screen it would cut off columns
+// final revision of this one made me realize it was better just to make the bubbles smaller.
 function prettyUpBoard(){
   let title = document.querySelector('.title');
+  let td = document.querySelectorAll('td');
   if(~~boardSize.value === 4){
     title.style.minWidth = '60rem';
     main.style.minWidth = '69rem';
   } else if(~~boardSize.value === 5){
     console.log('correct');
-    title.style.minWidth = '86rem';
-    body.style.minWidth = '86rem';
-    main.style.minWidth = '80rem';
+    td.forEach(i => i.style.width = '7rem');
+    td.forEach(i => i.style.height = '7rem');
+    main.style.minWidth = '74rem';
   } else if(~~boardSize.value === 6){
-    title.style.minWidth = '91.5rem';
-    main.style.minWidth = '85rem';
+    td.forEach(i => i.style.width = '6rem');
+    td.forEach(i => i.style.height = '6rem');
+    main.style.minWidth = '74rem';
   } else if(~~boardSize.value === 7){
-    title.style.minWidth = '101rem';
-    main.style.minWidth = '95rem';
+    td.forEach(i => i.style.width = '5rem');
+    td.forEach(i => i.style.height = '5rem');
+    main.style.minWidth = '74rem';
   }
 }
 
@@ -139,7 +144,7 @@ function findLowestOpen(colNum) {
     }
   }
 }
-
+// the main event listener for all of my code to be executed.
 main.addEventListener('click', (ev) => {
   let click = ev.target;
     if(!winner){
@@ -159,8 +164,10 @@ main.addEventListener('click', (ev) => {
           checkDiagRight(convert);
           checkDiagLeft(convert);
           turnsTillFull--;
-          console.log(turnsTillFull)
-          ifFull();
+          // console.log(turnsTillFull);
+          if(turnsTillFull === 0){
+          draw();
+          }
           if(!winner){
             whosTurn();
           }
@@ -174,8 +181,6 @@ function didWin() {
   if(player1){
     let name = namePlay1.innerText;
     namePlay1.innerText = `${name} is the winner!`;
-    title.style.backgroundColor = colorPlay1.value;
-    start.style.backgroundColor = colorPlay1.value;
     title.style.background = `linear-gradient( 1turn, ${colorPlay1.value}, white)`;
     start.style.background = `linear-gradient( 0.5turn, ${colorPlay1.value}, rgb(71, 71, 71))`;
     main.style.borderLeft = `3rem solid ${colorPlay1.value}`;
@@ -206,19 +211,18 @@ function countPlayTiles (currentToken, nextToken) {
     winner = true;
   } 
 }  
-  function checkHori(click) {
-    for(let i = board.length - 1; i > 0; i--){
-      let tokenColumn = board[i][click.className[1]];
-    let previousToken = board[i - 1][click.className[1]]; 
-    // console.log('win hori', winCount)
-    countPlayTiles(tokenColumn, previousToken);
-    //this is used to make sure winCout is reset to one at the end of each for loop.
-    if(i === 0){
-      countPlayTiles( 0, 1);
-      }
+function checkHori(click) {
+  for(let i = board.length - 1; i > 0; i--){
+    let tokenColumn = board[i][click.className[1]];
+  let previousToken = board[i - 1][click.className[1]]; 
+  // console.log('win hori', winCount)
+  countPlayTiles(tokenColumn, previousToken);
+  //this is used to make sure winCout is reset to one at the end of each for loop.
+  if(i === 0){
+    countPlayTiles( 0, 1);
     }
   }
-
+}
 function checkVerti(click) {
   let tokenRow = board[alphaKey[click.className[0]]];
   let num = ~~click.className[1];
@@ -292,17 +296,18 @@ function checkDiagLeft(click) {
   }
 }
 
-function ifFull(){
-  if(turnsTillFull === 0){
+function draw(){
     namePlay1.innerText = 'Draw! try again.';
     namePlay2.innerText = '';
     resetButton.classList.toggle('hide');
     resetButton.classList.toggle('here');
   } 
-}
-// this is used to put the game in a replayable form.
+// this is used to put the game in a replayable form. 
+//not a complete reset but a reset of the board so they can continue in the size board they already had.
 resetButton.addEventListener('click', (ev) => {
   ev.preventDefault();
+  let title = document.querySelector('.title');
+  let start = document.querySelector('.start');
   resetButton.classList.toggle('here');
   resetButton.classList.toggle('hide');
   let connectNum = ~~boardSize.value;
@@ -324,5 +329,9 @@ resetButton.addEventListener('click', (ev) => {
   namePlay1.style.textDecoration = 'underline';
   namePlay2.style.textDecoration = 'none';
   turnsTillFull = board.length * board[0].length;
+  title.style.background = `linear-gradient( 1turn, rgba(0, 191, 255, 0.662), white)`;
+  start.style.background = `linear-gradient( 0.5turn, rgba(0, 191, 255, 0.662), rgb(71, 71, 71))`;
+  main.style.borderLeft = `3rem solid rgb(81, 81, 216`;
+  main.style.borderRight = `3rem solid rgb(81, 81, 216`;
   return board;
 } )
