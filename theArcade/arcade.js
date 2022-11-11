@@ -316,7 +316,6 @@ resetButton.addEventListener('click', (ev) => {
   for(let i = 0; i < boardLength -1; i++){
     board.push([]);
     let resetBoard = main.children[i];
-    console.log(resetBoard.children)
     for(let j = 0; j < boardLength; j++){
       resetBoard.children[j].style.backgroundColor = 'rgb(71, 71, 71)';
       board[i].push(alph[i] + [j]);
